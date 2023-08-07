@@ -1,3 +1,4 @@
+require("dotenv").config();
 const path = require("path");
 const HtmlWebPackPlugin = require("html-webpack-plugin");
 const ModuleFederationPlugin = require("webpack/lib/container/ModuleFederationPlugin");
@@ -52,8 +53,14 @@ module.exports = {
       name: "shell",
       filename: "remoteEntry.js",
       remotes: {
-        mf1: "mf1@http://localhost:3001/remoteEntry.js",
-        mf2: "mf2@http://localhost:3002/remoteEntry.js",
+        mf1: `mf1@${
+          process.env.REACT_APP_MF1_REMOTE_ENTRY ||
+          "https://microfrontends-counter-mf1.vercel.app/remoteEntry.js"
+        }`,
+        mf2: `mf2@${
+          process.env.REACT_APP_MF2_REMOTE_ENTRY ||
+          "https://microfrontends-counter-mf2.vercel.app/remoteEntry.js"
+        }`,
       },
       exposes: {},
       shared: {
