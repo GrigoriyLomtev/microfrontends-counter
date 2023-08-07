@@ -1,10 +1,17 @@
+const path = require("path");
 const HtmlWebPackPlugin = require("html-webpack-plugin");
 const ModuleFederationPlugin = require("webpack/lib/container/ModuleFederationPlugin");
 
+const isDev = process.env.NODE_ENV === "development";
 const deps = require("./package.json").dependencies;
+
+const filename = (ext) => (isDev ? `[name].${ext}` : `[name].[hash].${ext}`);
+
 module.exports = {
   output: {
-    publicPath: "http://localhost:3000/",
+    filename: filename("js"),
+    path: path.resolve(__dirname, "dist"),
+    clean: true,
   },
 
   resolve: {
@@ -15,7 +22,6 @@ module.exports = {
     port: 3000,
     historyApiFallback: true,
   },
-
   module: {
     rules: [
       {
@@ -59,6 +65,16 @@ module.exports = {
         "react-dom": {
           singleton: true,
           requiredVersion: deps["react-dom"],
+        },
+        "react-redux": {
+          singleton: true,
+          eager: true,
+          requiredVersion: deps["react-redux"],
+        },
+        "@reduxjs/toolkit": {
+          singleton: true,
+          eager: true,
+          requiredVersion: deps["@reduxjs/toolkit"],
         },
       },
     }),
